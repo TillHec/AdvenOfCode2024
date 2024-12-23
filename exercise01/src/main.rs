@@ -10,7 +10,7 @@ fn main() {
     locations.sort();
     let result1 = locations.distance().iter().fold(0, |acc, x| acc + x);
     print!("The answer to exercise 1 is {}\n", result1);
-    locations.set_occurrences_left_and_initialize_right();
+    locations.set_occurrences_left();
     locations.set_occurrences_right();
 
     println!("The answer to exercise 2 is {}\n", locations.get_similarity_score());
@@ -64,10 +64,8 @@ impl Locations {
             .collect()
     }
 
-    fn set_occurrences_left_and_initialize_right(&mut self) {
+    fn set_occurrences_left(&mut self) {
         for number in self.left_side.iter() {
-            self.occurrences_right.entry(*number).or_insert(0);
-
             let count = self.occurrences_left.entry(*number).or_insert(0);
             *count += 1;
         }
@@ -82,11 +80,12 @@ impl Locations {
 
     fn get_similarity_score(&self) -> usize {
         let mut score = 0;
+        let default: usize = 0;
         self.occurrences_left
             .keys()
             .for_each(
                 |key| {
-                    score += key.abs() as usize * self.occurrences_left.get(key).unwrap() * self.occurrences_right.get(key).unwrap()
+                    score += key.abs() as usize * self.occurrences_left.get(key).unwrap() * self.occurrences_right.get(key).unwrap_or(&default);
                 }
             );
         score
