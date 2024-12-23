@@ -1,8 +1,11 @@
 use std::collections::HashMap;
-use std::fs;
+use std::{env, fs};
 
 fn main() {
-    let content = FileContent::from("input.txt");
+    let args: Vec<String> = env::args().collect();
+    let file_path = &args[1];
+
+    let content = FileContent::from(file_path);
     let mut locations = Locations::from(content.content_as_vec());
     locations.sort();
     let result1 = locations.distance().iter().fold(0, |acc, x| acc + x);
@@ -18,8 +21,8 @@ struct FileContent {
 }
 
 impl FileContent {
-    fn from(file_path: &str) -> FileContent {
-        let file_content = fs::read_to_string(&file_path).expect("Something went wrong reading the file");
+    fn from(file_path: &String) -> FileContent {
+        let file_content = fs::read_to_string(file_path).expect("Something went wrong reading the file");
         FileContent { content: file_content }
     }
 
